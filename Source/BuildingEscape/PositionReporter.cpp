@@ -9,6 +9,7 @@ UPositionReporter::UPositionReporter()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true; // true means this bit of code will be run every single frame
+	
 
 	// ...
 }
@@ -19,7 +20,10 @@ void UPositionReporter::BeginPlay()
 {
 	Super::BeginPlay(); // Super means that doing whatever happened up the inheritance tree
 						// that is, whatever happened up in the UActorComponent do that first, leave the engine to do that
-
+	UE_LOG(LogTemp, Error, TEXT("Position report reporting for duty !"));
+	// UE_LOG is a macro or Unreal header tool directive
+	// LogTemp is the log (record) it is going to be 
+	// Warning is to make the log come out at a particular color
 	// ...
 	
 }

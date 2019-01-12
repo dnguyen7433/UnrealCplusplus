@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-#include "Gameframework/Actor.h"
 #include "PositionReporter.h"
+#include "Gameframework/Actor.h"
+
 
 
 
@@ -20,7 +21,8 @@ void UPositionReporter::BeginPlay()
 	Super::BeginPlay(); // Super means that doing whatever happened up the inheritance tree
 						// that is, whatever happened up in the UActorComponent do that first, leave the engine to do that
 	FString ObjectName = GetOwner()->GetName(); 
-	UE_LOG(LogTemp, Warning, TEXT("Position report  for  %s !"),*ObjectName);// *  here is NOT dereferencing the pointer to an memory address, 
+	FString ObjectPos = GetOwner()->GetActorLocation().ToString();
+	UE_LOG(LogTemp, Warning, TEXT("%s is in %s"),*ObjectName,*ObjectPos);// *  here is NOT dereferencing the pointer to an memory address, 
 												// but * is an overloaded operator that macro in Unreal used.
 
 	// UE_LOG is a macro or Unreal header tool directive

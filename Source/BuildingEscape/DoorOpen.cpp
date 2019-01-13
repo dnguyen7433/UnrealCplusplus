@@ -12,7 +12,6 @@ UDoorOpen::UDoorOpen()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
 	// ...
 }
 
@@ -31,7 +30,7 @@ void UDoorOpen::OpenTheDoor()
 	AActor* Owner = GetOwner();
 
 	// Creating a rotator
-	FRotator NewRotation(0.0, 90.0, 0.0);
+	FRotator NewRotation(0.0f, -0.000292, 0.0f);
 	// Setting the door rotation
 	Owner->SetActorRotation(NewRotation);
 	// ...
@@ -43,7 +42,7 @@ void UDoorOpen::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	// Poll the trigger volume
-	if (PressurePlate->IsOverlappingActor(OpenThatDoor)) {
+	if ( PressurePlate->IsOverlappingActor(ActorOpenDoor)) {
 	// If that actor is in the volume
 	OpenTheDoor();
 	}

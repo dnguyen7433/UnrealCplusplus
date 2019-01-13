@@ -29,11 +29,11 @@ public:
 
 private:
 	UPROPERTY(VisibleAnywhere)
-	float OpenAngle = 90.0f;
+	float OpenAngle = -0.000292;
 	UPROPERTY(EditAnywhere) // UPROPERTY is a macro which do cut-and-paste a specific specifier. 
 							//The syntax doesn't need a semicolon
 	ATriggerVolume* PressurePlate; // A part of the syntax of UPROPERTY
 	UPROPERTY(EditAnywhere)
-	AActor* OpenThatDoor; // Because the pawn is inherited from AActor
+	AActor* ActorOpenDoor; // Because the pawn is inherited from AActor
 		
 };

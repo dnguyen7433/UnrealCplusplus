@@ -33,7 +33,7 @@ private:
 	UPROPERTY(EditAnywhere) // UPROPERTY is a macro which do cut-and-paste a specific specifier. 
 							//The syntax doesn't need a semicolon
 	ATriggerVolume* PressurePlate; // A part of the syntax of UPROPERTY
-	UPROPERTY(EditAnywhere)
+	
 	AActor* ActorOpenDoor; // Because the pawn is inherited from AActor
 		
 };

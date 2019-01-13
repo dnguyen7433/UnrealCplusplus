@@ -7,6 +7,7 @@
 
 
 
+
 // Sets default values for this component's properties
 UDoorOpen::UDoorOpen()
 {
@@ -26,19 +27,20 @@ void UDoorOpen::BeginPlay()
 	// and then we go and get the Pawn (BODY)
 	ActorOpenDoor = GetWorld()->GetFirstPlayerController()->GetPawn(); // Because A pawn IS A Actor
 																		//; therefore, ActorOpenDoor of AActor* can be assigned as APawn*
-	
+	Owner = GetOwner();
 }
 
 void UDoorOpen::OpenTheDoor()
 {
-	// Finding the owning actor
-	AActor* Owner = GetOwner();
-
-	// Creating a rotator
-	FRotator NewRotation(0.0f, -0.000292, 0.0f);
 	// Setting the door rotation
-	Owner->SetActorRotation(NewRotation);
-	// ...
+	Owner->SetActorRotation(FRotator(0.0f, OpenAngle, 0.0f));
+	
+}
+void UDoorOpen::CloseTheDoor()
+{
+	// Setting the door rotation
+	Owner->SetActorRotation(FRotator(0.0f, CloseAngle, 0.0f));
+	
 }
 
 
@@ -49,7 +51,13 @@ void UDoorOpen::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	// Poll the trigger volume
 	if ( PressurePlate&& PressurePlate->IsOverlappingActor(ActorOpenDoor)) {
 	// If that actor is in the volume
+	LastDoorOpenTime = GetWorld()->GetTimeSeconds();
 	OpenTheDoor();
+	}
+	// Check if the door close after opening for 2 seconds
+	
+	if ((GetWorld() ->GetTimeSeconds ()) >= (LastDoorOpenTime + DoorCloseDelay)) {
+	CloseTheDoor();
 	}
 }
 

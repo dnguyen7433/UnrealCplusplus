@@ -7,6 +7,7 @@
 #include "DrawDebugHelpers.h"
 #include "Engine/EngineTypes.h"
 #include "UObject/UObjectGlobals.h"
+#include "Components/PrimitiveComponent.h"
 #include "CollisionQueryParams.h"
 
 #define OUT
@@ -31,11 +32,20 @@ void UGrabber::BeginPlay()
 void UGrabber::Grab() {
 	UE_LOG(LogTemp, Warning, TEXT("Press to Grab"))
 		/// Line trace and see if we reach any actors with physics body collision set
+		auto Hit = ReturnFirstPhysicalBodyInReach();
+	auto ComponentToGrab = Hit.GetComponent();
+	auto ActorHit = Hit.GetActor();
+	/// If we hit something, then attach the physics handle
+	if (ActorHit != nullptr)
+	{
+		PhysicalHandle->GrabComponent(
+			ComponentToGrab,
+			NAME_None,
+			ComponentToGrab->GetOwner()->GetActorLocation(),
+			true // Allow Rotation
+		);
 
-		/// If we hit something, then attach the physics handle
-
-		// TODO attach physics handle
-
+	}
 }
 void UGrabber::Release() {
 	UE_LOG(LogTemp, Warning, TEXT("Grab is released"))
@@ -81,7 +91,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 
 		// TODO move the object every single frame
 
-	
+
 }
 // Report if any physical body is hit
 const FHitResult UGrabber::ReturnFirstPhysicalBodyInReach()

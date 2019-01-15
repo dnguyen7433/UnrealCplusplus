@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "GameFramework/Controller.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
+#include "Components/InputComponent.h"
 #include "Grabber.generated.h"
 
 
@@ -24,8 +26,25 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	float Reach = 100.f;
-	AActor* HitObject;
-		
+private:
 	
+	float Reach = 100.f; // Multiply to reach the distance
+	AActor* HitObject;
+	UPhysicsHandleComponent* PhysicalHandle = nullptr;  // Declare Physics Handle to move objects
+	UInputComponent* InputComponent = nullptr;
+
+	// R-cast and grab an object
+	void Grab();
+
+	// Called when grab is released
+	void Release();
+
+	// Find the (assumed) attached physical handler
+	void FindAttachedPhysicalHandle();
+
+	// Find the (assumed) attached input component
+	void FindInputComponent();
+
+	// Return hit for first physics body is hit
+	const FHitResult ReturnFirstPhysicalBodyInReach();
 };

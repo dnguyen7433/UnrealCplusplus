@@ -31,20 +31,15 @@ void UGrabber::BeginPlay()
 //  Looking for the physical handle
 void UGrabber::FindAttachedPhysicalHandle()
 {
-
 	PhysicalHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
-	if (PhysicalHandle) {
-		// Handle is found
-	}
-	else {
+	if (PhysicalHandle == nullptr){
 		// Reporting to the reader if no handle is found
 		UE_LOG(LogTemp, Error, TEXT("The handle of %s is not found! Please attach a physics handle to %s."), *(GetOwner()->GetName()));
 	}
 }
-/// Looking for the input component
+// Looking for the input component
 void UGrabber::FindInputComponent()
 {
-
 	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
 	if (InputComponent) {
 		// Input Component is found
@@ -91,71 +86,53 @@ void UGrabber::Release() {
 void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	// Get the player's viewpoint
-	FVector Location;
-	FRotator Rotation;
-	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(Location, Rotation);
-	FVector LineTraceEnd = Location + (Rotation.Vector() * Reach);
-
-	///Set up query parameters
-	FCollisionQueryParams TracePram(FName(TEXT(" ")), false, GetOwner());
-	///Ray cast (AKA Line trace) to reach distance
-	FHitResult HitResult;
-	GetWorld()->LineTraceSingleByObjectType(
-		OUT HitResult,
-		Location,
-		LineTraceEnd,
-		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
-		TracePram);
-	ReturnFirstPhysicalBodyInReach();
-
-	/// Look for the physics handle
-
+	
+	// Look for the physics handle
 	PhysicalHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+	// When the physics handle is attached, then grab the object and move the object within the LineTraceEnd
 	if (PhysicalHandle) {
-		// If the physics handle is attached
 		if (PhysicalHandle->GrabbedComponent) {
-
-		// Move the object every single frame
-			PhysicalHandle->SetTargetLocation(LineTraceEnd);
+			PhysicalHandle->SetTargetLocation(RayCastingToReachTheObject());
 		}
 	}
-	
 }
+
+
 // Report if any physical body is hit
 const FHitResult UGrabber::ReturnFirstPhysicalBodyInReach()
 {
-	// Get the player's viewpoint
-	FVector Location;
-	FRotator Rotation;
-	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(Location, Rotation);
-	
-	FVector LineTraceEnd = Location + (Rotation.Vector() * Reach);
-	/*
-	///Draw a red trace in the world to visualize
-	FColor Color(1, 0, 0);
-	DrawDebugLine(OUT GetWorld(),
-		Location,
-		LineTraceEnd,
-		Color,
-		false, 0, 0, 10.f);
-		*/
-	///Set up query parameters
-	FCollisionQueryParams TracePram(FName(TEXT(" ")), false, GetOwner());
-	
-	///Ray cast (AKA Line trace) to reach distance
-	FHitResult HitResult;
-	GetWorld()->LineTraceSingleByObjectType(
-		OUT HitResult,
-		Location,
-		LineTraceEnd,
-		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
-		TracePram);
-	// See what we hit
-	HitObject = HitResult.GetActor();
-
+	// Getting the hit result
+	FHitResult Hit = HitResult(RayCastingToReachTheObject());
+	// Getting the name of the object hit
+	HitObject = Hit.GetActor();
 	if (HitObject) {
 		UE_LOG(LogTemp, Warning, TEXT("%s is hit!!!"), *(HitObject->GetName()))
 	}
+	return Hit;
+}
+// Calculating the LineTraceEnd based on the player's rotation and location
+FVector UGrabber::RayCastingToReachTheObject()
+{
+	// Get the player's viewpoint
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(PlayerLocation, PlayerRotation);
+	// Draw the line trace end
+	FVector LineTraceEnd = PlayerLocation + (PlayerRotation.Vector() * Reach);
+	return LineTraceEnd;
+}
+// Returning the hit result if any object is within the player's LineTraceEnd distance
+FHitResult UGrabber::HitResult(FVector LineTraceEnd)
+{
+	///Set up query parameters
+	FCollisionQueryParams TracePram(FName(TEXT(" ")), false, GetOwner());
+	///Ray cast (AKA Line trace) to reach distance
+	FHitResult HitResult;
+	GetWorld()->LineTraceSingleByObjectType(
+	OUT HitResult,
+	OUT PlayerLocation,
+	OUT LineTraceEnd,
+	OUT FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
+	OUT TracePram);
 	return HitResult;
 }
+
+

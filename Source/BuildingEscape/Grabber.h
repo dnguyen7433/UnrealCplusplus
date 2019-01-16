@@ -32,6 +32,8 @@ private:
 	AActor* HitObject;
 	UPhysicsHandleComponent* PhysicalHandle = nullptr;  // Declare Physics Handle to move objects
 	UInputComponent* InputComponent = nullptr;
+	FVector PlayerLocation;
+	FRotator PlayerRotation;
 
 	// R-cast and grab an object
 	void Grab();
@@ -47,4 +49,11 @@ private:
 
 	// Return hit for first physics body is hit
 	const FHitResult ReturnFirstPhysicalBodyInReach();
+
+	// Set up the Line Tracing to reach the object 
+	FVector RayCastingToReachTheObject();
+
+	// Getting the hit result when the grabber hit the object
+	FHitResult HitResult(FVector);
+
 };

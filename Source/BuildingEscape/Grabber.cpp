@@ -58,10 +58,12 @@ void UGrabber::FindInputComponent()
 void UGrabber::Grab() {
 	UE_LOG(LogTemp, Warning, TEXT("Press to Grab"))
 		/// Line trace and see if we reach any actors with physics body collision set
-	auto Hit = ReturnFirstPhysicalBodyInReach();
+		auto Hit = ReturnFirstPhysicalBodyInReach();
 	auto ComponentToGrab = Hit.GetComponent();
 	auto ActorHit = Hit.GetActor();
 	/// If we hit something, then attach the physics handle
+	if (!PhysicalHandle) { return; }
+
 	if (ActorHit != nullptr)
 	{
 		PhysicalHandle->GrabComponent(
@@ -76,6 +78,7 @@ void UGrabber::Grab() {
 void UGrabber::Release() {
 	UE_LOG(LogTemp, Warning, TEXT("Grab is released"))
 		// Release the object.
+		if (!PhysicalHandle) { return; }
 		PhysicalHandle->ReleaseComponent();
 
 }
@@ -88,7 +91,9 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	
 	// Look for the physics handle
+	
 	PhysicalHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+	if (!PhysicalHandle) { return; }
 	// When the physics handle is attached, then grab the object and move the object within the LineTraceEnd
 	if (PhysicalHandle) {
 		if (PhysicalHandle->GrabbedComponent) {

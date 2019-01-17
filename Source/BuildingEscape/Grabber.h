@@ -29,7 +29,7 @@ public:
 private:
 	
 	float Reach = 100.f; // Multiply to reach the distance
-	AActor* HitObject;
+	AActor* HitObject = nullptr;
 	UPhysicsHandleComponent* PhysicalHandle = nullptr;  // Declare Physics Handle to move objects
 	UInputComponent* InputComponent = nullptr;
 	FVector PlayerLocation;

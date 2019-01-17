@@ -24,17 +24,23 @@ UDoorOpen::UDoorOpen()
 void UDoorOpen::BeginPlay()
 {
 	Super::BeginPlay();
+
 	Owner = GetOwner();
+	if (!PressurePlate) {
+		UE_LOG(LogTemp, Error, TEXT("Pressure Plate of %s is missing!!!"), *(GetOwner()->GetName()))
+	}
 }
 
 void UDoorOpen::OpenTheDoor()
 {
+	
 	// Setting the door rotation
 	Owner->SetActorRotation(FRotator(0.0f, OpenAngle, 0.0f));
 	
 }
 void UDoorOpen::CloseTheDoor()
 {
+	
 	// Setting the door rotation
 	Owner->SetActorRotation(FRotator(0.0f, CloseAngle, 0.0f));
 	
@@ -46,6 +52,7 @@ void UDoorOpen::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	// Poll the trigger volume
+	
 	if (GetTotalMassOfActorOnPressurePlate() > 20.0f) {
 	// If that actor is in the volume
 	LastDoorOpenTime = GetWorld()->GetTimeSeconds();
@@ -61,6 +68,7 @@ void UDoorOpen::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 float UDoorOpen:: GetTotalMassOfActorOnPressurePlate() {
 	float TotalMass = 0.f;
 	if (PressurePlate == nullptr) {
+		
 		return TotalMass;
 	}
 

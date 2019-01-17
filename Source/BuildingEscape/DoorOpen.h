@@ -7,7 +7,7 @@
 #include "Engine/TriggerVolume.h "
 #include "DoorOpen.generated.h"
 
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnOpenRequest);
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BUILDINGESCAPE_API UDoorOpen : public UActorComponent
 {
@@ -16,6 +16,8 @@ class BUILDINGESCAPE_API UDoorOpen : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UDoorOpen();
+	UPROPERTY(BlueprintAssignable)
+	FOnOpenRequest OnOpenRequest;
 
 protected:
 	// Called when the game starts

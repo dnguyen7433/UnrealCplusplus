@@ -7,7 +7,8 @@
 #include "Engine/TriggerVolume.h "
 #include "DoorOpen.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnOpenRequest);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDoorRequest);
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BUILDINGESCAPE_API UDoorOpen : public UActorComponent
 {
@@ -17,14 +18,14 @@ public:
 	// Sets default values for this component's properties
 	UDoorOpen();
 	UPROPERTY(BlueprintAssignable)
-	FOnOpenRequest OnOpenRequest;
+	FDoorRequest OnOpenRequest;
 
+	UPROPERTY(BlueprintAssignable)
+	FDoorRequest OnCloseRequest;
+	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
-	void OpenTheDoor();
-	void CloseTheDoor();
 
 public:	
 	// Called every frame
@@ -34,20 +35,13 @@ public:
 
 private:
 	// UPROPERTY is a macro which do cut-and-paste a specific specifier. 
-	//The syntax doesn't need a semicolon
-	UPROPERTY(EditAnywhere)
-	float OpenAngle = -0.000292;
-	UPROPERTY(EditAnywhere)
-	float CloseAngle = 89.89f;
+	
 
 	UPROPERTY(EditAnywhere) 
-
-	// A part of the syntax of UPROPERTY
 	ATriggerVolume* PressurePlate = nullptr; 
 
 	UPROPERTY(EditAnyWhere)
-	float DoorCloseDelay = 0.01f;
-	float LastDoorOpenTime;
+	float TriggerMass = 30.0f;
 
 	// The Owning door 
 	AActor* Owner; 
